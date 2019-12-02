@@ -1,4 +1,5 @@
-(ns advent-of-code-2019.day-1)
+(ns advent-of-code-2019.day-1
+  (:require [clojure.test :refer :all]))
 
 ;;;
 ;;; PROBLEM 1
@@ -43,10 +44,11 @@
 (defn fuel-required [mass]
   (- (quot mass 3) 2))
 
-(assert (= (fuel-required 12) 2))
-(assert (= (fuel-required 14) 2))
-(assert (= (fuel-required 1969) 654))
-(assert (= (fuel-required 100756) 33583))
+(deftest fuel-required-examples
+  (is (= (fuel-required 12) 2))
+  (is (= (fuel-required 14) 2))
+  (is (= (fuel-required 1969) 654))
+  (is (= (fuel-required 100756) 33583)))
 
 (defn fuel-required-of-all-modules [module-masses]
   (reduce + (map fuel-required module-masses)))
@@ -95,8 +97,9 @@
       0
       (+ fuel (total-fuel-required fuel)))))
 
-(assert (= (total-fuel-required 1969) 966))
-(assert (= (total-fuel-required 100756) 50346))
+(deftest total-fuel-required-examples
+  (is (= (total-fuel-required 1969) 966))
+  (is (= (total-fuel-required 100756) 50346)))
 
 (defn total-fuel-required-of-all-modules [module-masses]
   (reduce + (map total-fuel-required module-masses)))
