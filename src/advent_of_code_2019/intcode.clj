@@ -53,6 +53,32 @@
     {:instruction-pointer (+ 2 pos)
      :memory memory}))
 
+(defn- jump-if-true [{pos :instruction-pointer, memory :memory} parameter-modes]
+  (let [predicate (read-parameter (+ 1 pos) memory (get parameter-modes 0))
+        address (read-parameter (+ 2 pos) memory (get parameter-modes 1))]
+    {:memory memory
+     :instruction-pointer (if (= 0 predicate) (+ 3 pos) address)}))
+
+(defn- jump-if-false [{pos :instruction-pointer, mem :memory} parameter-modes]
+  (let [predicate (read-parameter (+ 1 pos) mem (get parameter-modes 0))
+        address (read-parameter (+ 2 pos) mem (get parameter-modes 1))]
+    {:memory mem
+     :instruction-pointer (if (= 0 predicate) address (+ 3 pos))}))
+
+(defn- less-than [{pos :instruction-pointer, memory :memory} parameter-modes]
+  (let [frst (read-parameter (+ 1 pos) memory (get parameter-modes 0))
+        scnd (read-parameter (+ 2 pos) memory (get parameter-modes 1))
+        result-position (get-immediate-value (+ 3 pos) memory)]
+    {:memory (assoc memory result-position (if (< frst scnd) 1 0))
+     :instruction-pointer (+ 4 pos)}))
+
+(defn- equals [{pos :instruction-pointer, memory :memory} parameter-modes]
+  (let [frst (read-parameter (+ 1 pos) memory (get parameter-modes 0))
+        scnd (read-parameter (+ 2 pos) memory (get parameter-modes 1))
+        result-position (get-immediate-value (+ 3 pos) memory)]
+    {:memory (assoc memory result-position (if (= frst scnd) 1 0))
+     :instruction-pointer (+ 4 pos)}))
+
 (defn stop [{memory :memory} parameter-modes]
   {:instruction-pointer nil
    :memory memory})
@@ -62,6 +88,10 @@
    2 multiply
    3 store-value
    4 output-value
+   5 jump-if-true
+   6 jump-if-false
+   7 less-than
+   8 equals
    99 stop})
 
 
